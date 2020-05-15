@@ -1,2 +1,3 @@
 rootProject.name = 'all-frameworks-gradle'
+include 'data-structures'
 
