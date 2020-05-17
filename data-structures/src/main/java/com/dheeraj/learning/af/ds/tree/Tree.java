@@ -1,8 +1,6 @@
 package com.dheeraj.learning.af.ds.tree;
 
-import java.util.HashSet;
-import java.util.Set;
-import java.util.Stack;
+import java.util.*;
 
 public class Tree {
 
@@ -39,7 +37,20 @@ public class Tree {
         inOrderRecursive(root.right);
     }
 
-
+    public static void inOrderIterative(Node root) {
+        Stack<Node> stack = new Stack<>();
+        Node curr = root;
+        while(!stack.isEmpty() || curr!=null) {
+            if(curr!=null) {
+                stack.push(curr);
+                curr = curr.left;
+            } else {
+                curr = stack.pop();
+                System.out.print(curr.val+" ");
+                curr = curr.right;
+            }
+        }
+    }
 
     //POSTORDER
     public static void postOrderRecursive(Node root){
@@ -48,6 +59,129 @@ public class Tree {
         postOrderRecursive(root.left);
         postOrderRecursive(root.right);
         System.out.print(root.val + " ");
+    }
+
+    /**
+     * Alogorithm : Using single stack.
+     * 1.1 Create an empty stack
+     * 2.1 Do following while root is not NULL
+     *     a) Push root's right child and then root to stack.
+     *     b) Set root as root's left child.
+     * 2.2 Pop an item from stack and set it as root.
+     *     a) If the popped item has a right child and the right child
+     *        is at top of stack, then remove the right child from stack,
+     *        push the root back and set root as root's right child.
+     *     b) Else print root's data and set root as NULL.
+     * 2.3 Repeat steps 2.1 and 2.2 while stack is not empty.
+     *
+     * @param root
+     */
+    public static void postOrderIterative(Node root) {
+        Stack<Node> stack = new Stack<>();
+        Node curr=root;
+        while(!stack.isEmpty() || curr != null) {
+            while(curr!=null) {
+                if(curr.right!=null)
+                    stack.push(curr.right);
+                stack.push(curr);
+                curr=curr.left;
+            }
+
+            curr=stack.pop();
+
+            if (curr.right != null && !stack.isEmpty() && curr.right == stack.peek()) {
+                Node rightNode = stack.pop();
+                stack.push(curr);
+                curr = rightNode;
+            } else {
+                System.out.print(curr.val+" ");
+                curr = null;
+            }
+        }
+    }
+
+    /**
+     * Algorithm : Simpler version
+     * Push directly root node two times while traversing to the left.
+     * While popping if you find stack top() is same as root then go for root->right else print root.
+     * @param root
+     */
+    public static void postOrderIterativeSimpler(Node root) {
+        Stack<Node> stack = new Stack<>();
+        Node curr=root;
+        while(true) {
+            while(curr!=null) {
+                stack.push(curr);
+                stack.push(curr);
+                curr = curr.left;
+            }
+
+            if(stack.isEmpty())
+                return;
+            curr = stack.pop();
+
+            if(!stack.isEmpty() && curr==stack.peek()) {
+                curr = curr.right;
+            } else {
+                System.out.print(curr.val+" ");
+                curr = null;
+            }
+        }
+    }
+
+    /**
+     * Algorithm: PostOrder traversal with two stacks.
+     *
+     */
+    public static void postOrderIterativeTwoStacks(Node root) {
+        if(root==null)
+            return;
+        Stack<Node> stack1 = new Stack<>();
+        Stack<Node> stack2 = new Stack<>();
+        stack1.push(root);
+        while(!stack1.isEmpty()) {
+            Node temp = stack1.pop();
+            stack2.push(temp);
+            if(temp.left!=null)
+            stack1.push(temp.left);
+            if(temp.right!=null)
+            stack1.push(temp.right);
+        }
+        while(!stack2.isEmpty()) {
+            System.out.print(stack2.pop().val + " ");
+        }
+    }
+
+    /**
+     * Algorithm: PostOrder traversal with one stack and easy to understand.
+     * 1.If curr not null, push it to stack and move left.
+     * 2.else if stack peek's right is null, pop it and print it
+     * 3.While the curr is same as stack peek's right, pop it and print it.
+     * 4.if stack peek's right is not null in step 2, traverse the right subtree. i.e assign curr to stacks peek;
+     * https://www.youtube.com/watch?v=xLQKdq0Ffjg
+     *
+     */
+    public static void postOrderIterativeWithSingleStackOwn(Node root) {
+        Stack<Node> stack = new Stack<>();
+        Node curr = root;
+        while(!stack.isEmpty() || curr!=null) {
+            if (curr != null) {
+                stack.push(curr);
+                curr = curr.left;
+            } else {
+                Node temp = stack.peek().right;
+                if(temp == null) {
+                    temp = stack.pop();
+                    System.out.print(temp.val+" ");
+                    while(!stack.isEmpty() && temp == stack.peek().right) {
+                        temp = stack.pop();
+                        System.out.print(temp.val+" ");
+                    }
+                } else {
+                    curr = temp;
+                }
+            }
+        }
     }
 
     /**
@@ -121,5 +255,196 @@ public class Tree {
         }
     }
 
+    /**
+     * Level order with queues
+     * @param root
+     */
+    public static void levelOrderIterative(Node root) {
+        if(root==null)
+            return;
+        Queue<Node> queue = new LinkedList<>();
+        queue.add(root);
+        while(!queue.isEmpty()){
+            Node curr = queue.remove();
+            System.out.print(curr.val+" ");
+            if(curr.left!=null)
+                queue.add(curr.left);
+            if(curr.right!=null)
+                queue.add(curr.right);
+        }
+    }
 
+    /**
+     * Level order with queues to print level by level
+     * @param root
+     */
+    public static void levelOrderPrintLevelByLevel(Node root) {
+        if(root==null)
+            return;
+        Queue<Node> queue = new LinkedList<Node>();
+        queue.add(root);
+        queue.add(null);
+        int count=1;
+        Node curr;
+        System.out.print("Level "+count+": ");
+        while(!queue.isEmpty()){
+            curr = queue.remove();
+            if(curr!=null) {
+                System.out.print(curr.val+" ");
+                if(curr.left!=null)
+                    queue.add(curr.left);
+                if(curr.right!=null)
+                    queue.add(curr.right);
+            }else{
+                if(queue.isEmpty())
+                    break;
+                queue.add(null);
+                System.out.print("\nLevel "+(++count)+": ");
+            }
+        }
+    }
+
+    public static void levelOrderWithMap(Node root) {
+        Map<Integer, List<Node>> map = new HashMap<>();
+        Node curr = root;
+        int level=1;
+        List<Node> list = new ArrayList<Node>();
+        list.add(curr);
+        map.put(level,list);
+        while(true) {
+            List<Node> nodesInGivenLevel = map.get(level);
+            System.out.println("Level "+level+" : "+Arrays.toString(nodesInGivenLevel.toArray()));
+            List<Node> nodesInLevelPlusOne = new ArrayList<>();
+            for (Node temp : nodesInGivenLevel) {
+                if(temp.left!=null)
+                    nodesInLevelPlusOne.add(temp.left);
+                if(temp.right!=null)
+                    nodesInLevelPlusOne.add(temp.right);
+            }
+            if(nodesInLevelPlusOne.isEmpty())
+                break;
+            map.put(++level, nodesInLevelPlusOne);
+        }
+    }
+
+    /**
+     * Not most accurate method. Have some flaws.
+     * This takes the order of traversal and bottom nodes in the vertical may get printed before top node.
+     * Instead better to try with level order traversal and then construct map.
+     *
+     */
+    public static void verticalOrder(Node root) {
+        if(root==null)
+            return;
+        TreeMap<Integer,ArrayList<Node>> map = new TreeMap<>();
+        constructVerticalOrderMap(root, 0, map);
+        for (Integer verticalLevel : map.keySet()) {
+            ArrayList<Node> currVerticalList = map.get(verticalLevel);
+            System.out.printf("\nVertical %s : ",verticalLevel);
+            for (Node curr :
+                    currVerticalList) {
+                System.out.print(curr.val+" ");
+            }
+        }
+    }
+
+    /**
+     *
+     */
+    public static void verticalOrderUsingLevelOrderTraversal(Node root) {
+        if(root==null)
+            return;
+        TreeMap<Integer,ArrayList<Node>> verticalMap= new TreeMap<>();
+        Map<Node,Integer> nodeLevel = new HashMap<>();
+        levelOrderForVerticalOrder(root, verticalMap, nodeLevel);
+        for (Integer verticalLevel : verticalMap.keySet()) {
+            ArrayList<Node> currVerticalList = verticalMap.get(verticalLevel);
+            System.out.printf("\nVertical %s : ",verticalLevel);
+            for (Node curr : currVerticalList) {
+                System.out.print(curr.val+" ");
+            }
+        }
+    }
+
+    /**
+     * Level order with queues to print level by level
+     * @param root
+     */
+    private static void levelOrderForVerticalOrder(Node root,
+                                                   TreeMap<Integer,ArrayList<Node>> verticalMap,
+                                                   Map<Node,Integer> nodeVerticalLevel) {
+        Queue<Node> queue = new LinkedList<>();
+        queue.add(root);
+        Node curr;
+        nodeVerticalLevel.put(root, 0);
+
+        while(!queue.isEmpty()){
+            curr = queue.remove();
+            System.out.print(curr.val+" ");
+            int verticalLevel = nodeVerticalLevel.get(curr);
+            verticalMap.computeIfAbsent(verticalLevel, key->new ArrayList<>());
+            verticalMap.get(verticalLevel).add(curr);
+            if(curr.left!=null) {
+                queue.add(curr.left);
+                nodeVerticalLevel.put(curr.left, verticalLevel-1);
+            }
+            if(curr.right!=null) {
+                queue.add(curr.right);
+                nodeVerticalLevel.put(curr.right, verticalLevel+1);
+            }
+        }
+    }
+
+
+    private static void constructVerticalOrderMap(Node root, int level, TreeMap<Integer,ArrayList<Node>> map) {
+        map.computeIfAbsent(level,key -> new ArrayList<>());
+        map.get(level).add(root);
+        if(root.left!=null)
+            constructVerticalOrderMap(root.left,level-1,map);
+        if(root.right!=null)
+            constructVerticalOrderMap(root.right,level+1,map);
+    }
+
+    /**
+     * Not useful for vertical order traversal.
+     * @param root
+     * @param verticalLevel
+     * @param horizontalLevel
+     * @param verticalMap
+     * @param horizontalMap
+     */
+    private static void constructVerticalAndHorizontalMap(Node root, int verticalLevel, int horizontalLevel,
+                                                          TreeMap<Integer,ArrayList<Node>> verticalMap,
+                                                          Map<Integer,ArrayList<Node>> horizontalMap) {
+        verticalMap.computeIfAbsent(verticalLevel,key -> new ArrayList<>());
+        verticalMap.get(verticalLevel).add(root);
+        horizontalMap.computeIfAbsent(horizontalLevel,key -> new ArrayList<>());
+        horizontalMap.get(verticalLevel).add(root);
+        if(root.left!=null)
+            constructVerticalAndHorizontalMap(root.left,verticalLevel-1, horizontalLevel+1, verticalMap, horizontalMap);
+        if(root.right!=null)
+            constructVerticalAndHorizontalMap(root.right,verticalLevel+1,horizontalLevel+1, verticalMap, horizontalMap);
+    }
+
+    public static void topViewOfATree(Node root) {
+        if(root==null)
+            return;
+        TreeMap<Integer,ArrayList<Node>> map = new TreeMap<>();
+        constructVerticalOrderMap(root, 0, map);
+        for (Integer verticalLevel : map.keySet()) {
+            ArrayList<Node> currVerticalList = map.get(verticalLevel);
+            System.out.print(currVerticalList.get(0)+" ");
+        }
+    }
+
+    public static void bottomViewOfATree(Node root) {
+        if(root==null)
+            return;
+        TreeMap<Integer,ArrayList<Node>> map = new TreeMap<>();
+        constructVerticalOrderMap(root, 0, map);
+        for (Integer verticalLevel : map.keySet()) {
+            ArrayList<Node> currVerticalList = map.get(verticalLevel);
+            System.out.print(currVerticalList.get(currVerticalList.size()-1)+" ");
+        }
+    }
 }
