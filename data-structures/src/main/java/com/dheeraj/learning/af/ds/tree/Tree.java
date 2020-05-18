@@ -274,6 +274,51 @@ public class Tree {
         }
     }
 
+    public static void levelOrderRecursive(Node root) {
+        //Find height of the tree. h
+        int h = height(root);
+        for(int i=0;i<=h;i++)
+            levelOrderRecursiveSub(root, i, 0);
+    }
+
+    /**
+     * This can also be done only with level param and not sending h.
+     * Have to reduce it's value int the method.
+     * Can refer this for improvement : http://www.crazyforcode.com/recursive-level-order-traversal-tree/
+     *  void printLevelOrder(struct node* root)
+     * {
+     *     int h = height(root);
+     *     int i;
+     *     for(i=1; i<=h; i++)
+     *         printLevel(root, i);
+     * }
+     * void printLevel(struct node* root, int level)
+     * {
+     *     if(root == NULL)
+     *         return;
+     *     if(level == 0)
+     *         printf("%d ", root->data);
+     *     else if (level > 1)
+     *     {
+     *         printLevel(root->left, level-1);
+     *         printLevel(root->right, level-1);
+     *     }
+     * }
+     * @param root
+     * @param h
+     * @param level
+     */
+    private static void levelOrderRecursiveSub(Node root, int h, int level) {
+        if(root!=null) {
+            if(h==level)
+                System.out.print(root.val+" ");
+            else if (h > level){
+                levelOrderRecursiveSub(root.left,h,level+1);
+                levelOrderRecursiveSub(root.right,h,level+1);
+            }
+        }
+    }
+
     /**
      * Level order with queues to print level by level
      * @param root
@@ -349,14 +394,13 @@ public class Tree {
     }
 
     /**
-     *
+     * Algorithm: This is the accurate algo as it traverses level by level and vertically sorts them in correct order.
      */
     public static void verticalOrderUsingLevelOrderTraversal(Node root) {
         if(root==null)
             return;
         TreeMap<Integer,ArrayList<Node>> verticalMap= new TreeMap<>();
-        Map<Node,Integer> nodeLevel = new HashMap<>();
-        levelOrderForVerticalOrder(root, verticalMap, nodeLevel);
+        levelOrderForVerticalOrder(root, verticalMap);
         for (Integer verticalLevel : verticalMap.keySet()) {
             ArrayList<Node> currVerticalList = verticalMap.get(verticalLevel);
             System.out.printf("\nVertical %s : ",verticalLevel);
@@ -371,8 +415,8 @@ public class Tree {
      * @param root
      */
     private static void levelOrderForVerticalOrder(Node root,
-                                                   TreeMap<Integer,ArrayList<Node>> verticalMap,
-                                                   Map<Node,Integer> nodeVerticalLevel) {
+                                                   TreeMap<Integer,ArrayList<Node>> verticalMap) {
+        Map<Node,Integer> nodeVerticalLevel = new HashMap<>();
         Queue<Node> queue = new LinkedList<>();
         queue.add(root);
         Node curr;
@@ -380,7 +424,6 @@ public class Tree {
 
         while(!queue.isEmpty()){
             curr = queue.remove();
-            System.out.print(curr.val+" ");
             int verticalLevel = nodeVerticalLevel.get(curr);
             verticalMap.computeIfAbsent(verticalLevel, key->new ArrayList<>());
             verticalMap.get(verticalLevel).add(curr);
@@ -405,32 +448,11 @@ public class Tree {
             constructVerticalOrderMap(root.right,level+1,map);
     }
 
-    /**
-     * Not useful for vertical order traversal.
-     * @param root
-     * @param verticalLevel
-     * @param horizontalLevel
-     * @param verticalMap
-     * @param horizontalMap
-     */
-    private static void constructVerticalAndHorizontalMap(Node root, int verticalLevel, int horizontalLevel,
-                                                          TreeMap<Integer,ArrayList<Node>> verticalMap,
-                                                          Map<Integer,ArrayList<Node>> horizontalMap) {
-        verticalMap.computeIfAbsent(verticalLevel,key -> new ArrayList<>());
-        verticalMap.get(verticalLevel).add(root);
-        horizontalMap.computeIfAbsent(horizontalLevel,key -> new ArrayList<>());
-        horizontalMap.get(verticalLevel).add(root);
-        if(root.left!=null)
-            constructVerticalAndHorizontalMap(root.left,verticalLevel-1, horizontalLevel+1, verticalMap, horizontalMap);
-        if(root.right!=null)
-            constructVerticalAndHorizontalMap(root.right,verticalLevel+1,horizontalLevel+1, verticalMap, horizontalMap);
-    }
-
     public static void topViewOfATree(Node root) {
         if(root==null)
             return;
         TreeMap<Integer,ArrayList<Node>> map = new TreeMap<>();
-        constructVerticalOrderMap(root, 0, map);
+        levelOrderForVerticalOrder(root,  map);
         for (Integer verticalLevel : map.keySet()) {
             ArrayList<Node> currVerticalList = map.get(verticalLevel);
             System.out.print(currVerticalList.get(0)+" ");
@@ -441,10 +463,25 @@ public class Tree {
         if(root==null)
             return;
         TreeMap<Integer,ArrayList<Node>> map = new TreeMap<>();
-        constructVerticalOrderMap(root, 0, map);
+        levelOrderForVerticalOrder(root, map);
         for (Integer verticalLevel : map.keySet()) {
             ArrayList<Node> currVerticalList = map.get(verticalLevel);
             System.out.print(currVerticalList.get(currVerticalList.size()-1)+" ");
         }
+    }
+
+    public static int height(Node root) {
+        if (root == null)
+            return -1;
+        else {
+            int leftTreeHeight = height(root.left);
+            int rightTreeHeight = height(root.right);
+
+            if(leftTreeHeight>rightTreeHeight)
+                return leftTreeHeight+1;
+            else
+                return rightTreeHeight+1;
+        }
+
     }
 }
