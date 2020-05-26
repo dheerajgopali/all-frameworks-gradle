@@ -52,6 +52,16 @@ public class Tree {
         }
     }
 
+    public static void inOrderRecursiveWithRandomNode(Node root){
+        if(root == null)
+            return;
+        inOrderRecursiveWithRandomNode(root.left);
+        System.out.print(root.val + " ");
+        if(root.random!=null)
+            System.out.print("->"+root.random.val+ " ");
+        inOrderRecursiveWithRandomNode(root.right);
+    }
+
     //POSTORDER
     public static void postOrderRecursive(Node root){
         if(root == null)
@@ -459,6 +469,33 @@ public class Tree {
         }
     }
 
+    public static void topViewOwn(Node root) {
+        if(root==null)
+            return;
+        Queue<Node> queue = new LinkedList<>();
+        queue.add(root);
+        Map<Node, Integer> nodeLevelMap = new HashMap<>();
+        nodeLevelMap.put(root,0);
+        Map<Integer, Node> verticalLevelMap = new TreeMap<>();
+        Node curr;
+
+        while(!queue.isEmpty()) {
+            curr = queue.remove();
+            int level = nodeLevelMap.get(curr);//Contains check needed.
+            verticalLevelMap.putIfAbsent(level,curr);
+            if(curr.left!=null) {
+                nodeLevelMap.put(curr.left,level-1);
+                queue.add(curr.left);
+            }
+            if(curr.right!=null) {
+                nodeLevelMap.put(curr.right,level+1);
+                queue.add(curr.right);
+            }
+        }
+
+        System.out.println(verticalLevelMap.values());
+    }
+
     public static void bottomViewOfATree(Node root) {
         if(root==null)
             return;
@@ -483,5 +520,103 @@ public class Tree {
                 return rightTreeHeight+1;
         }
 
+    }
+
+    /**
+     * Cloning regular tree with left and right sub trees.
+     * @param root
+     */
+    public static Node clone(Node root) {
+        if(root==null)
+            return null;
+        Node clone = new Node(root.val);
+        if(root.left!=null)
+            clone.left = clone(root.left);
+        if(root.right!=null)
+            clone.right = clone(root.right);
+        return clone;
+    }
+
+    /**
+     * To clone a tree with each node having a random pointer to another node in the tree.
+     *
+     * @param root
+     * @return
+     */
+    public static Node cloneATreeWithRandomPointer(Node root) {
+        Map<Node,Node> originalToCloneMap = new HashMap<>();
+        return clone(root,originalToCloneMap);
+    }
+
+    private static Node clone(Node root, Map<Node,Node> originalToCloneMap){
+        if(root == null)
+            return null;
+        Node clone = getOriginalToCloneNode(root,originalToCloneMap);
+
+        if(root.left!=null)
+            clone.left = clone(root.left, originalToCloneMap);
+        if(root.right!=null)
+            clone.right = clone(root.right, originalToCloneMap);
+        if(root.random!=null) {
+            clone.random = getOriginalToCloneNode(root.random, originalToCloneMap);
+        }
+        return clone;
+    }
+
+    private static Node getOriginalToCloneNode(Node root, Map<Node,Node> originalToCloneMap){
+
+        if(!originalToCloneMap.containsKey(root)){
+            Node clone = new Node(root.val);
+            originalToCloneMap.put(root,clone);
+            return clone;
+        } else {
+            return originalToCloneMap.get(root);
+        }
+    }
+
+    /**
+     * Traverse a tree in spiral order. It means the first level in left to right, the second level in right to left
+     * and so on.
+     *
+     * Improvement :
+     * 1. Using a Degueue (Double ended queue) decreases the space required.
+     * 2. Using a map of Dequeue will simplify the program.
+     *
+     * @param root
+     */
+    public static void spiralOrder(Node root) {
+        if(root==null)
+            return;
+        Queue<Node> queue = new LinkedList<>();
+        Stack<Node> stack = new Stack<>();
+        queue.add(root);
+        queue.add(null);
+        Node curr = null;
+        int level=0;
+        while(!queue.isEmpty()) {
+            curr = queue.remove();
+            if(curr!=null) {
+                System.out.print(curr.val+" ");
+                if(level%2==1){
+                    if(curr.right!=null)
+                        stack.add(curr.right);
+                    if(curr.left!=null)
+                        stack.add(curr.left);
+                }else {
+                    if(curr.left!=null)
+                        stack.add(curr.left);
+                    if(curr.right!=null)
+                        stack.add(curr.right);
+                }
+            }else {
+                if(stack.isEmpty())
+                    break;
+                while(!stack.isEmpty()) {
+                    queue.add(stack.pop());
+                }
+                queue.add(null);
+                level++;
+            }
+        }
     }
 }

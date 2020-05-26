@@ -14,6 +14,24 @@ public class TestTree {
      */
     Node unbalancedTreeNode;
 
+    /**
+     * Along with left and right subtrees, each node has a random pointer for this.
+     */
+    Node treeWithRandomPointers;
+
+    /**
+     * Balanced tree:
+     *                  4
+     *          2               6
+     *      1       3       5       7
+     * Unbalanced tree:
+     *                  1
+     *              2       3
+     *                  5       6
+     *
+     *              7       8
+     *                  9       10
+     */
     @Before
     public void before() {
         balancedTreeNode = TreeUtil.createBST("1,2,3,4,5,6,7");
@@ -26,6 +44,18 @@ public class TestTree {
         unbalancedTreeNode.right.left.right = new Node(8);
         unbalancedTreeNode.right.left.right.left = new Node(9);
         unbalancedTreeNode.right.left.right.right = new Node(10);
+
+        treeWithRandomPointers = new Node(1);
+        treeWithRandomPointers.left = new Node(2);
+        treeWithRandomPointers.right = new Node(3);
+        treeWithRandomPointers.right.left = new Node(5);
+        treeWithRandomPointers.right.right = new Node(6);
+        treeWithRandomPointers.right.left.left = new Node(7);
+        treeWithRandomPointers.right.left.right = new Node(8);
+        treeWithRandomPointers.right.left.right.left = new Node(9);
+        treeWithRandomPointers.right.left.right.right = new Node(10);
+        treeWithRandomPointers.random=treeWithRandomPointers.right.right;
+        treeWithRandomPointers.left.random = treeWithRandomPointers.right.left.right.left;
     }
 
     @Test
@@ -37,6 +67,8 @@ public class TestTree {
         Tree.verticalOrderUsingLevelOrderTraversal(root);
         System.out.println("\nTop view of a tree.");
         Tree.topViewOfATree(root);
+        System.out.println("\nTop view implemented without clues/help.");
+        Tree.topViewOwn(root);
         System.out.println("\nBottom view of a tree.");
         Tree.bottomViewOfATree(root);
 
@@ -44,8 +76,6 @@ public class TestTree {
         //http://www.crazyforcode.com/recursive-level-order-traversal-tree/
         System.out.println();
     }
-
-
 
     @Test
     public void testPreInPostOrders() {
@@ -81,5 +111,32 @@ public class TestTree {
         Tree.levelOrderWithMap(root);
         System.out.println("\nLevel order traversal Recursive");
         Tree.levelOrderRecursive(root);
+    }
+
+    @Test
+    public void testCloneTree(){
+        Node root = unbalancedTreeNode;
+        System.out.println("\nInorder Traversal of actual tree:");
+        Tree.inOrderRecursive(root);
+        Node clone=Tree.clone(root);
+        System.out.println("\nInorder Traversal of cloned tree:");
+        Tree.inOrderRecursive(clone);
+    }
+
+    @Test
+    public void testCloneTreeWithRandomNode(){
+        Node root = treeWithRandomPointers;
+        System.out.println("\nInorder Traversal of actual tree with random nodes:");
+        Tree.inOrderRecursiveWithRandomNode(root);
+        Node clone=Tree.cloneATreeWithRandomPointer(root);
+        System.out.println("\nInorder Traversal of cloned tree with random nodes:");
+        Tree.inOrderRecursiveWithRandomNode(clone);
+    }
+
+    @Test
+    public void testSpiralOrderTraversal(){
+        Node root = balancedTreeNode;
+        System.out.println("\nSpiral Order Traversal");
+        Tree.spiralOrder(root);
     }
 }
