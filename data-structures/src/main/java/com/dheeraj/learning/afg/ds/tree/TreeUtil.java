@@ -1,4 +1,4 @@
-package com.dheeraj.learning.af.ds.tree;
+package com.dheeraj.learning.afg.ds.tree;
 
 public class TreeUtil {
     /**

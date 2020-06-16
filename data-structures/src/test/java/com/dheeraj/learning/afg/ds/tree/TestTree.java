@@ -1,4 +1,4 @@
-package com.dheeraj.learning.af.ds.tree;
+package com.dheeraj.learning.afg.ds.tree;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -138,5 +138,26 @@ public class TestTree {
         Node root = balancedTreeNode;
         System.out.println("\nSpiral Order Traversal");
         Tree.spiralOrder(root);
+        //TODO - Spiral order with doublylinked list and map.
+        /*
+        void spiralOrderWithMapAndDeque(Node root) {
+	Map<Integer, ArrayDequeue> levelMap = new HashMap<>();
+	spiralOrder(root,levelMap,1);
+	//sout each level in map.
+}
+
+void spiralOrder(root,levelMap,level) {
+	if(root == null)
+		return;
+	levelMap.putIfAbsent(level,new ArrayDequeue());
+
+	if(level%2==1) {
+		levelMap.get(level).addFront(root.left);
+		levelMap.get(level).addFront(root.right);
+	}
+
+}
+        * */
+
     }
 }

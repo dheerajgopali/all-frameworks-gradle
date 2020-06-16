@@ -1,4 +1,4 @@
-package com.dheeraj.learning.af.ds.tree;
+package com.dheeraj.learning.afg.ds.tree;
 
 /**
  * Graphviz is a tool to display graphs efficiently with coding.
