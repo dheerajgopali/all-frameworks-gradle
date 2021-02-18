@@ -1,0 +1,22 @@
+plugins {
+    id 'groovy'
+    id 'java'
+}
+
+group 'com.dheeraj.learning'
+version '1.0-SNAPSHOT'
+
+sourceCompatibility = 1.8
+targetCompatibility = 1.8
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    // tika
+    compile group: 'org.apache.tika', name: 'tika', version: '1.23'
+    compile group: 'org.apache.tika', name: 'tika-core', version: '1.23'
+    compile group: 'org.apache.tika', name: 'tika-parsers', version: '1.23'
+    compile group: 'org.apache.tika', name: 'tika-app', version: '1.23'
+}

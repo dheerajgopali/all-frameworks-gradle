@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mime-info>
+    <mime-type type="application/x-prescription+xml">
+        <sub-class-of type="application/xml"/>
+        <acronym>XPD</acronym>
+        <expanded-acronym>Extensible Description Document</expanded-acronym>
+        <comment xml:lang="en">Digital prescription</comment>
+        <glob pattern="*.xpd"/>
+        <root-XML localName="prescription"
+                  namespaceURI="http://example.com/2011/xpd"/>
+    </mime-type>
+</mime-info>
